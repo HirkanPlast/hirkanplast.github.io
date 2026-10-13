@@ -1,0 +1,74 @@
+name: Download Pexels photos into assets
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/download-pexels-assets.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  download-and-localize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out site
+        uses: actions/checkout@v4
+
+      - name: Download all Pexels images referenced by the site
+        run: |
+          python3 <<'PY'
+          import os
+          import re
+          import urllib.request
+          from pathlib import Path
+          from urllib.parse import urlparse
+
+          html_path = Path("index.html")
+          html = html_path.read_text(encoding="utf-8")
+          urls = list(dict.fromkeys(re.findall(
+              r'https://images\.pexels\.com/[^\s"\'<>)]*', html
+          )))
+          if not urls:
+              raise SystemExit("No Pexels image URLs were found in index.html")
+
+          assets = Path("assets")
+          assets.mkdir(exist_ok=True)
+
+          for url in urls:
+              match = re.search(r'/photos/(\d+)/', url)
+              if not match:
+                  raise SystemExit(f"Could not identify Pexels photo ID: {url}")
+              photo_id = match.group(1)
+              path = assets / f"pexels-{photo_id}.jpg"
+              request = urllib.request.Request(
+                  url, headers={"User-Agent": "Mozilla/5.0 HirkanPlast-assets/1.0"}
+              )
+              with urllib.request.urlopen(request, timeout=45) as response:
+                  data = response.read()
+                  content_type = response.headers.get("Content-Type", "")
+              if len(data) < 1000 or not content_type.startswith("image/"):
+                  raise SystemExit(
+                      f"Download did not return a valid image for {photo_id}: "
+                      f"type={content_type}, bytes={len(data)}"
+                  )
+              path.write_bytes(data)
+              html = html.replace(url, f"assets/{path.name}")
+              print(f"Saved {path} ({len(data)} bytes)")
+
+          html_path.write_text(html, encoding="utf-8")
+          print(f"Localized {len(urls)} unique Pexels photos in index.html")
+          PY
+
+      - name: Commit local image assets and updated paths
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html assets/
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Download Pexels photos into local assets"
+            git push
+          fi
