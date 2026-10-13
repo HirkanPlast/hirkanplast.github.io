@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://hirkanplast.github.io/sitemap.xml
