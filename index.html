@@ -403,8 +403,12 @@ const clear=document.getElementById("inventory-clear");
 const reset=document.getElementById("inventory-reset");
 let activeCategory="همه محصولات";
 let activeParent="همه گروه‌ها";
+const formatCount=value=>new Intl.NumberFormat("fa-IR").format(value);
 const normalize=value=>String(value||"").toLocaleLowerCase("fa")
 .replace(/[يى]/g,"ی").replace(/ك/g,"ک").replace(/[ۀة]/g,"ه")
+.replace(/[\u06f0-\u06f9]/g,digit=>String(digit.charCodeAt(0)-0x06f0))
+.replace(/[\u0660-\u0669]/g,digit=>String(digit.charCodeAt(0)-0x0660))
+.replace(/[×✕✖]/g,"x").replace(/[‐‑‒–—−]/g,"-")
 .replace(/[\u200c\u200f\u200e]/g," ").replace(/\s+/g," ").trim();
 function applyFilters(){
  const q=normalize(search.value); let visible=0;
@@ -417,7 +421,7 @@ function applyFilters(){
    card.hidden=!show;
    if(show)visible++;
  });
- count.textContent=`${visible} محصول${activeParent!=="همه گروه‌ها"?" در گروه "+activeParent:(activeCategory!=="همه محصولات"?" در زیردسته "+activeCategory:"")}`;
+ count.textContent=`${formatCount(visible)} محصول${activeParent!=="همه گروه‌ها"?" در گروه "+activeParent:(activeCategory!=="همه محصولات"?" در زیردسته "+activeCategory:"")}`;
  empty.classList.toggle("show",visible===0);
 }
 parentButtons.forEach(button=>button.addEventListener("click",()=>{
