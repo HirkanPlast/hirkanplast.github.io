@@ -369,7 +369,7 @@ if(requestForm){requestForm.addEventListener("submit",function(event){
  "محصول/دسته: "+(data.get("productName")||"—"),
  "تعداد: "+(data.get("quantity")||"ذکر نشده"),
  "توضیحات: "+(data.get("details")||"ندارد")
- ].join("\\n");
+ ].join("\n");
  window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(message),"_blank","noopener,noreferrer");
 });}
 const search=document.getElementById("inventory-search");
