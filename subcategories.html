@@ -425,6 +425,7 @@ const clear=document.getElementById("inventory-clear");
 const reset=document.getElementById("inventory-reset");
 let activeCategory="همه محصولات";
 let activeParent=parentGroups[initialParent]?initialParent:"همه گروه‌ها";
+tabs.forEach(t=>{const c=t.dataset.filter;t.hidden=c!=="همه محصولات" && activeParent!=="همه گروه‌ها" && !(parentGroups[activeParent]||[]).includes(c);});
 const formatCount=value=>new Intl.NumberFormat("fa-IR").format(value);
 const normalize=value=>String(value||"").toLocaleLowerCase("fa")
 .replace(/[يى]/g,"ی").replace(/ك/g,"ک").replace(/[ۀة]/g,"ه")
