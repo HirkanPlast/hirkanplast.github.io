@@ -65,6 +65,13 @@
 @media(max-width:360px){.products{grid-template-columns:1fr}.product-top{display:flex}.product-icon{margin:0}.about-points{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 
+/* Android/mobile horizontal overflow safeguard */
+html,body{width:100%;max-width:100%;overflow-x:clip}
+body{min-width:0}
+img,svg,video,iframe{max-width:100%}
+.container,.section,.section-head,.hero-grid,.shop-grid,.contact-grid,.about-panel,.parent-category-grid,.inventory-grid{min-width:0;max-width:100%}
+@supports not (overflow:clip){html,body{overflow-x:hidden}}
+
 /* Readability and contrast improvements */
 :root{--muted:#526257;--green:#123b2b;--green2:#1b5a3c;--ink:#18251d}
 .parent-category small,.subcategory-heading p,.inventory-body p,.product-category,.inventory-meta,.section-head p,.hero p,.contact-line small,.map-note p{color:#435348}
