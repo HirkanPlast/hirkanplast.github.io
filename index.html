@@ -460,7 +460,6 @@ if(requestForm){
   }finally{button.disabled=false;button.textContent="ارسال درخواست در تلگرام ↗";}
  });
 }
-const search=document.getElementById("inventory-search");
 const cards=Array.from(document.querySelectorAll(".inventory-card"));
 const tabs=Array.from(document.querySelectorAll(".category-tab"));
 const parentButtons=Array.from(document.querySelectorAll(".parent-category"));
@@ -473,7 +472,6 @@ const parentGroups={
 };
 const count=document.getElementById("inventory-count");
 const empty=document.getElementById("inventory-empty");
-const clear=document.getElementById("inventory-clear");
 const reset=document.getElementById("inventory-reset");
 let activeCategory="همه محصولات";
 let activeParent="همه گروه‌ها";
@@ -485,13 +483,11 @@ const normalize=value=>String(value||"").toLocaleLowerCase("fa")
 .replace(/[×✕✖]/g,"x").replace(/[‐‑‒–—−]/g,"-")
 .replace(/[\u200c\u200f\u200e]/g," ").replace(/\s+/g," ").trim();
 function applyFilters(){
- const q=normalize(search.value); let visible=0;
+ let visible=0;
  cards.forEach(card=>{
    const category=card.dataset.category||"";
-   const text=normalize(card.innerText+" "+(card.dataset.search||""));
    const categoryMatch=(activeCategory==="همه محصولات"||category===activeCategory) && (activeParent==="همه گروه‌ها" || (parentGroups[activeParent]||[]).includes(category));
-   const searchMatch=!q||text.includes(q);
-   const show=categoryMatch&&searchMatch;
+   const show=categoryMatch;
    card.hidden=!show;
    if(show)visible++;
  });
@@ -512,9 +508,7 @@ tabs.forEach(tab=>tab.addEventListener("click",()=>{
  applyFilters();
 }));
 function resetFilters(){activeCategory="همه محصولات";activeParent="همه گروه‌ها";tabs.forEach(t=>t.setAttribute("aria-pressed",String(t.dataset.filter===activeCategory)));parentButtons.forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.parent===activeParent)));applyFilters();}
-search.addEventListener("input",applyFilters);
-clear.addEventListener("click",()=>{search.value="";applyFilters();search.focus();});
-reset.addEventListener("click",()=>{resetFilters();search.focus();});
+reset.addEventListener("click",resetFilters);
 document.querySelectorAll(".inventory-order").forEach(link=>{
  const name=link.dataset.product||"محصول موردنظر";
  link.href="#telegram-request-form";
