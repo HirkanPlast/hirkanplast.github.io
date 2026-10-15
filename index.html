@@ -254,6 +254,7 @@ if(requestForm){
  });
 }
 // Keep product/category visuals visible if a remote photo fails to load.
+const normalize=value=>String(value||"").toLocaleLowerCase("fa").replace(/[يى]/g,"ی").replace(/ك/g,"ک").replace(/[ۀة]/g,"ه").replace(/[\u200c\u200f\u200e]/g," ").replace(/\s+/g," ").trim();
 function fallbackEmoji(img){
  const hint=normalize((img.alt||"")+" "+(img.closest(".inventory-card")?.innerText||"")+" "+(img.closest(".parent-category")?.innerText||""));
  if(/کیسه|نایلکس|نایلون|زباله|فریزر|بسته.?بندی/.test(hint)) return "🛍️";
@@ -278,7 +279,6 @@ document.querySelectorAll("img").forEach(img=>{
  if(img.complete && img.naturalWidth===0) handleImageFailure(img);
 });
 document.getElementById("year").textContent=new Date().getFullYear();
-applyFilters();
 })();
 </script>
 </body>
