@@ -413,11 +413,11 @@ const cards=Array.from(document.querySelectorAll(".inventory-card"));
 const tabs=Array.from(document.querySelectorAll(".category-tab"));
 const parentButtons=Array.from(document.querySelectorAll(".parent-category"));
 const parentGroups={
- "ظروف و سرو غذا":["ظروف","ظروف PP","ظروف PS","ظروف آلومینیومی","فوم","پیش‌دستی"],
- "کیسه و بسته‌بندی":["نایلکس","کیسه زباله","کیسه فریزر","سفره"],
- "نوشیدنی و بطری":["لیوان","لیوان کاغذی","بطری","گالن و دبه"],
- "ابزار سرو":["قاشق و چنگال","نی و خلال"],
- "ملزومات آشپزخانه":["دستمال","دستکش","محافظ غذا","فویل"]
+ "ظروف یکبارمصرف و بسته‌بندی غذا":["ظروف","ظروف PP","ظروف PS","ظروف آلومینیومی","فوم","پیش‌دستی"],
+ "انواع کیسه و نایلون":["نایلکس","کیسه زباله","کیسه فریزر"],
+ "لیوان، بطری و ظروف نگهداری مایعات":["لیوان","لیوان کاغذی","بطری","گالن و دبه"],
+ "قاشق، چنگال و لوازم سرو":["قاشق و چنگال","نی و خلال"],
+ "ملزومات آشپزخانه و نگهداری غذا":["سفره","دستمال","دستکش","محافظ غذا","فویل"]
 };
 const count=document.getElementById("inventory-count");
 const empty=document.getElementById("inventory-empty");
@@ -448,6 +448,7 @@ function applyFilters(){
 }
 parentButtons.forEach(button=>button.addEventListener("click",()=>{
  activeParent=button.dataset.parent; activeCategory="همه محصولات";
+  tabs.forEach(t=>{const c=t.dataset.filter;t.hidden=c!=="همه محصولات" && activeParent!=="همه گروه‌ها" && !(parentGroups[activeParent]||[]).includes(c);});
  parentButtons.forEach(b=>b.setAttribute("aria-pressed",String(b===button)));
  tabs.forEach(t=>t.setAttribute("aria-pressed",String(t.dataset.filter===activeCategory)));
  applyFilters();
@@ -459,7 +460,7 @@ tabs.forEach(tab=>tab.addEventListener("click",()=>{
  tabs.forEach(t=>t.setAttribute("aria-pressed",String(t===tab)));
  applyFilters();
 }));
-function resetFilters(){search.value="";activeCategory="همه محصولات";activeParent="همه گروه‌ها";tabs.forEach(t=>t.setAttribute("aria-pressed",String(t.dataset.filter===activeCategory)));parentButtons.forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.parent===activeParent)));applyFilters();}
+function resetFilters(){search.value="";activeCategory="همه محصولات";activeParent="همه گروه‌ها";tabs.forEach(t=>{t.hidden=false;t.setAttribute("aria-pressed",String(t.dataset.filter===activeCategory));});parentButtons.forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.parent===activeParent)));applyFilters();}
 search.addEventListener("input",applyFilters);
 clear.addEventListener("click",()=>{search.value="";applyFilters();search.focus();});
 reset.addEventListener("click",()=>{resetFilters();search.focus();});
